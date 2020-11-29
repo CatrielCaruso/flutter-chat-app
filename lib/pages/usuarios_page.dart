@@ -1,8 +1,11 @@
 
+
 import 'package:flutter/material.dart';
 
 import 'package:chat_app/model/usuarios.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:chat_app/services/auth_services.dart';
 
 
 class UsuariosPage extends StatefulWidget {
@@ -18,9 +21,9 @@ class _UsuariosPageState extends State<UsuariosPage> {
 
   final usuarios=[
    
-   Usuario(nombre: 'Maria',mail:'test1@test',uid: '1',online: true),
-   Usuario(nombre: 'Melisa',mail:'test2@test',uid: '2',online: false),
-   Usuario(nombre: 'Fernando',mail:'test3@test',uid: '3',online: true),
+   Usuario(nombre: 'Maria',email:'test1@test',uid: '1',online: true),
+   Usuario(nombre: 'Melisa',email:'test2@test',uid: '2',online: false),
+   Usuario(nombre: 'Fernando',email:'test3@test',uid: '3',online: true),
 
   ];
 
@@ -28,17 +31,28 @@ class _UsuariosPageState extends State<UsuariosPage> {
   @override
   Widget build(BuildContext context) {
 
+    final authService = Provider.of<AuthService>(context);
+    final usuario = authService.usuario;
+
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         
-        title: Text('Mi nombre',style: TextStyle(color: Colors.black87),),
+        title: Text(usuario.nombre,style: TextStyle(color: Colors.black87),),
         centerTitle: true,
         elevation: 1.0,
         backgroundColor: Colors.white,
         leading:IconButton(
         icon:Icon(Icons.exit_to_app,color: Colors.black87) , 
-        onPressed:(){}
+        onPressed:(){
+
+
+          // TODO Desconectar el socket server
+          
+          Navigator.pushReplacementNamed(context, 'login');
+          AuthService.deleteToken();
+
+        }
         ) ,
         actions:<Widget> [
           
@@ -85,7 +99,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
         
         
         title: Text(usuario.nombre),
-        subtitle: Text(usuario.mail),
+        subtitle: Text(usuario.email),
         leading: CircleAvatar(
              
              child: Text(usuario.nombre.substring(0,2)),
